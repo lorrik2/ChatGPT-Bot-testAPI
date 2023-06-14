@@ -1,25 +1,8 @@
 import { useEffect, useState } from 'react';
 import './scss/style.scss';
 import { ReactComponent as Avatar } from './assets/robot-svgrepo-com.svg';
+import { Messages } from './types/Message';
 const { Configuration, OpenAIApi } = require('openai');
-
-const Fake = [
-  "Hi there, I'm Fabio and you?",
-  'Nice to meet you',
-  'How are you?',
-  'Not too bad, thanks',
-  'What do you do?',
-  "That's awesome",
-  'Codepen is a nice place to stay',
-  "I think you're a nice person",
-  'Why do you think that?',
-  'Can you explain?',
-  "Anyway I've gotta go now",
-  'It was a pleasure chat with you',
-  'Time to make a new codepen',
-  'Bye',
-  ':)',
-];
 
 function Chat(): JSX.Element {
   const configuration = new Configuration({
@@ -30,71 +13,18 @@ function Chat(): JSX.Element {
   const [prompt, setPrompt] = useState('');
   const [apiResponse, setApiResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<Messages[]>([]);
 
-  //  const [messages, setMessages] = useState<any[]>([]);
-  //  let d: Date;
-  //  let h: number;
-  //  let m: number;
-  //  let i = 0;
-
-  //  console.log(messages);
-
-  //  const setDate = (): void => {
-  //    d = new Date();
-  //    if (m != d.getMinutes()) {
-  //      m = d.getMinutes();
-  //      setMessages([...messages, <div className="timestamp">{d.getHours() + ':' + m}</div>]);
-  //    }
-  //  };
-
-  //  const insertMessage = (): boolean | undefined => {
-  //    let msg = document.querySelector('.message-input') as HTMLInputElement;
-
-  //    if (msg.value.trim() == '') {
-  //      return false;
-  //    }
-
-  //    setMessages([...messages, <div className="message message-personal">{msg.value}</div>]);
-
-  //    setDate();
-  //    msg.value = '';
-
-  //    setTimeout(() => fakeMessage(), 1000 + Math.random() * 2000);
-  //  };
-
-  //  const fakeMessage = (): boolean | undefined => {
-  //    let msg = document.querySelector('.message-input') as HTMLInputElement;
-  //    if (msg.value != '') return false;
-
-  //    setMessages([
-  //      ...messages,
-  //      <div className="message loading new">
-  //        <figure className="avatar">
-  //          <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" />
-  //        </figure>
-  //        <span></span>
-  //      </div>,
-  //    ]);
-
-  //    setTimeout(() => {
-  //      setMessages(messages.splice(messages.length - 1, 1));
-  //      setMessages([
-  //        ...messages,
-  //        <div className="message new">
-  //          <figure className="avatar">
-  //            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" />
-  //          </figure>
-  //          {Fake[i]}
-  //        </div>,
-  //      ]);
-  //      setDate();
-  //      i++;
-  //    }, 1000 + Math.random() * 2000);
-  //  };
+  console.log(message);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
     setLoading(true);
+    const allMessages = {
+      toMessage: prompt,
+      meMessage: 'gerfwe',
+    };
+    setMessage((prev) => [...prev, allMessages]);
     try {
       const result = await openai.createCompletion({
         model: 'text-davinci-003',
@@ -110,6 +40,12 @@ function Chat(): JSX.Element {
     }
     setLoading(false);
   };
+
+  function sayHi(val: string): string {
+    return val;
+  }
+
+  setTimeout(sayHi, 100000);
 
   return (
     <>
