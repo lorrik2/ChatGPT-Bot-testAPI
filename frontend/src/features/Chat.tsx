@@ -16,15 +16,10 @@ function Chat(): JSX.Element {
   const [message, setMessage] = useState<Messages[]>([]);
 
   console.log(message);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
     setLoading(true);
-    const allMessages = {
-      toMessage: prompt,
-      meMessage: 'gerfwe',
-    };
-    setMessage((prev) => [...prev, allMessages]);
+
     try {
       const result = await openai.createCompletion({
         model: 'text-davinci-003',
@@ -34,9 +29,20 @@ function Chat(): JSX.Element {
       });
       console.log('response', result.data.choices[0].text);
       setApiResponse((prev) => (prev = result.data.choices[0].text));
+
+      const allMessages = {
+        toMessage: prompt,
+        meMessage: apiResponse,
+      };
+      setMessage((prev) => [...prev, allMessages]);
     } catch (e) {
-      //console.log(e);
       setApiResponse('Something is going wrong, Please try again.');
+
+      const allMessages = {
+        toMessage: prompt,
+        meMessage: "I'm fine, but how are you doing? What are you doing?",
+      };
+      setMessage((prev) => [...prev, allMessages]);
     }
     setLoading(false);
   };
@@ -59,10 +65,31 @@ function Chat(): JSX.Element {
         </div>
         <div className="messages">
           <div className="messages-content">
-            {apiResponse && (
-              <>
-                <strong>API response:</strong>
+            {/*{apiResponse && message && (
+              <div className="bubble-you" key={crypto.randomUUID()}>
+                <strong>API response: </strong>
                 {apiResponse}
+              </div>
+            )}*/}
+            {message ? (
+              message.map((el) => (
+                <>
+                  <div className="bubble-me" key={crypto.randomUUID()}>
+                    <strong>Me: </strong>
+                    {el.toMessage}
+                  </div>
+                  <div className="bubble-you" key={crypto.randomUUID()}>
+                    <strong>API response: </strong>
+                    {el.meMessage}
+                  </div>
+                </>
+              ))
+            ) : (
+              <>
+                <div className="bubble-you" key={crypto.randomUUID()}>
+                  <strong>API response: </strong>
+                  {apiResponse}
+                </div>
               </>
             )}
           </div>
